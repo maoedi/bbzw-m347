@@ -197,26 +197,9 @@ Docker zeigt dann alle Build-Schritte und deren Layer an.
 
 # Container starten
 
-```
-docker run -p 8080:8080 demo-layers
-```
-
-Die Anwendung ist danach erreichbar unter:
-
-```
-http://localhost:8080
-```
-
----
-
-
-# Container starten
-
 ```bash
 docker run -p 8080:8080 demo-layers
 ```
-
-Dieser Befehl startet einen Container aus dem Image **demo-layers**.
 
 Die Anwendung ist danach erreichbar unter:
 
