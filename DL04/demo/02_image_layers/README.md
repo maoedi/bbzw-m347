@@ -72,11 +72,23 @@ docker build --build-arg maintainer_email=me@example.com -t demo-layers .
 
 Metadaten des Images.
 
-```
+```dockerfile
 LABEL maintainer=$maintainer_email
 ```
 
----
+Labels speichern zusätzliche Informationen über ein Image, z.B.:
+
+* Maintainer
+* Version
+* Beschreibung
+
+Diese Informationen ändern **nicht das Dateisystem des Containers**, sondern werden als **Image-Metadaten** gespeichert.
+
+Sie können später angezeigt werden mit:
+
+```bash
+docker inspect <image>
+```
 
 **WORKDIR**
 
@@ -124,13 +136,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 **USER**
 
-Definiert den Benutzer im Container.
+Definiert den Benutzer, mit dem Prozesse im Container ausgeführt werden.
 
-```
+```dockerfile
 USER 1000
 ```
 
-Best Practice: Container nicht als `root` laufen lassen.
+Standardmässig laufen viele Container als **root** (Administrator).
+Aus Sicherheitsgründen ist es jedoch besser, Container als **normaler Benutzer** laufen zu lassen.
+
+Vorteile:
+
+* geringere Sicherheitsrisiken
+* eingeschränkte Rechte im Container
+* Best Practice für Produktionssysteme
 
 ---
 
@@ -190,12 +209,37 @@ http://localhost:8080
 
 # Environment Variablen ändern
 
-Die Anwendung liest Konfiguration aus Environment Variablen.
+Die Anwendung liest Konfiguration aus **Environment Variablen**.
+In unserem Beispiel verwendet der Python-Webserver die Variablen:
+
+* `WHO` → bestimmt den Namen in der Begrüssung
+* `PORT` → bestimmt den Port des Servers
+
+Im Code wird die Variable so ausgelesen:
+
+```python
+os.environ.get("WHO", "World")
+```
+
+Wenn keine Variable gesetzt ist, wird der Standardwert **"World"** verwendet.
+
+---
+
+## Container mit Environment Variable starten
 
 Beispiel:
 
 ```
 docker run -p 8080:8080 -e WHO="M347 Students" demo-layers
+```
+
+* `-e` → setzt eine Environment Variable im Container
+* `WHO="M347 Students"` → wird an den Container übergeben
+
+Die Anwendung ist danach erreichbar unter:
+
+```
+http://localhost:8080
 ```
 
 Antwort des Servers:
@@ -204,7 +248,78 @@ Antwort des Servers:
 Hallo M347 Students.
 ```
 
+Der Webserver liest also die Environment Variable `WHO` aus und verwendet sie in der Antwort.
+
 ---
+
+## Environment Variablen im Container anzeigen
+
+Man kann die gesetzten Variablen auch direkt im Container überprüfen.
+
+### Container-ID herausfinden
+
+```
+docker ps
+```
+
+### Environment Variablen anzeigen
+
+```
+docker exec -it <container-id> env
+```
+
+Beispielausgabe:
+
+```
+WHO=M347 Students
+PORT=8080
+```
+
+Damit sieht man, dass die Variable tatsächlich im Container gesetzt wurde.
+
+---
+
+## Shell im Container öffnen
+
+Mit folgendem Befehl kann eine **interaktive Shell im Container** gestartet werden:
+
+```
+docker exec -it <container-id> /bin/sh
+```
+
+Dann befindet man sich direkt im Container und kann dort Befehle ausführen.
+
+Beispiele:
+
+```
+env
+whoami
+ls
+```
+
+Die Shell kann mit `exit` wieder verlassen werden.
+
+---
+
+## Verbindung zur Anwendung
+
+Der Ablauf ist also:
+
+```
+docker run -e WHO="M347 Students"
+            │
+            ▼
+Environment Variable im Container
+            │
+            ▼
+Python Anwendung liest Variable über os.environ
+            │
+            ▼
+Webserver verwendet den Wert in der HTTP-Antwort
+```
+
+Damit können Anwendungen **konfiguriert werden, ohne den Code zu ändern**.
+
 
 # Layer Cache demonstrieren
 
@@ -226,15 +341,3 @@ Docker zeigt dann bei unveränderten Schritten häufig:
 ```
 CACHED
 ```
-
----
-
-# Idee der Demo
-
-Diese Demo zeigt:
-
-* dass Docker Images aus **mehreren Layern** bestehen
-* wie **Dockerfile-Anweisungen Layer erzeugen**
-* wie man Layer mit `docker history` anzeigen kann
-* wie **Docker Cache Builds beschleunigt**
-* wie **ENV Variablen** eine Anwendung konfigurieren
