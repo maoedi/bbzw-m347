@@ -90,6 +90,8 @@ Sie können später angezeigt werden mit:
 docker inspect <image>
 ```
 
+---
+
 **WORKDIR**
 
 Setzt das Arbeitsverzeichnis im Container.
