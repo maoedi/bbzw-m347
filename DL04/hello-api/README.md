@@ -12,9 +12,7 @@ scripts/    Hilfsskripte für Docker
 Dockerfile  Container-Definition
 ```
 
-## Lokales Ausführen
-
-### 1. Virtuelle Umgebung aktivieren
+## Virtuelle Umgebung aktivieren
 
 Vor dem Start der Anwendung sollte die virtuelle Python-Umgebung aktiviert werden.
 Dadurch werden die projektspezifischen Python-Abhängigkeiten verwendet.
@@ -30,17 +28,18 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 2. Abhängigkeiten installieren
+### 1. Abhängigkeiten installieren
 
 ```
-pip install docker
+pip install -r requirements.txt
 ```
 
-### 3. Server lokal starten
+## Server lokal ausführen
 
 Die Anwendung kann direkt als Python-Modul gestartet werden:
 
 ```
+cd src
 python -m hello_api.app
 ```
 
