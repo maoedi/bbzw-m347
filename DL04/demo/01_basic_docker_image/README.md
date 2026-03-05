@@ -20,7 +20,7 @@ COPY app.py .
 CMD ["python", "app.py"]
 ```
 
-## Erklärung der Anweisungen
+## Erklärungen
 
 ### FROM
 
@@ -30,7 +30,6 @@ FROM python:3.12-slim
 
 Das Image basiert auf einem **Base Image**.
 Hier wird ein minimales Python-Image verwendet, das bereits Python installiert hat.
-
 Dieses Base Image enthält bereits mehrere **Layer**.
 
 ---
@@ -41,10 +40,8 @@ Dieses Base Image enthält bereits mehrere **Layer**.
 WORKDIR /app
 ```
 
-Setzt das **Arbeitsverzeichnis im Container**.
-
+Setzt das **Arbeitsverzeichnis im Container**. 
 Alle folgenden Befehle werden relativ zu diesem Ordner ausgeführt.
-
 Falls das Verzeichnis noch nicht existiert, wird es automatisch erstellt.
 
 ---
@@ -56,7 +53,6 @@ COPY app.py .
 ```
 
 Kopiert die Datei `app.py` aus dem Projektordner in das Image.
-
 Der Punkt (`.`) bedeutet:
 → kopiere die Datei in das aktuelle Arbeitsverzeichnis (`/app`).
 
@@ -171,6 +167,8 @@ docker image history demo-image
 
 Docker zeigt dann die einzelnen Build-Schritte und deren Layer an.
 
+
+
 ---
 
 # Warum sind Layer wichtig?
@@ -185,16 +183,3 @@ Wenn sich z.B. nur `app.py` ändert:
 * die unteren Layer bleiben gleich
 
 Dadurch werden **Docker Builds deutlich schneller**.
-
----
-
-# Idee der Demo
-
-Diese Demo zeigt:
-
-* wie ein **Dockerfile** ein Image definiert
-* wie ein **Image gebaut** wird
-* wie daraus ein **Container gestartet** wird
-* dass ein Container immer **einen Hauptprozess** hat
-* wie man den Hauptprozess überprüfen kann
-* wie Docker Images aus **Layern** aufgebaut sind
