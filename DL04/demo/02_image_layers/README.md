@@ -211,7 +211,7 @@ http://localhost:8080
 
 ## Erklärung der Option `-p`
 
-Die Option `-p` steht für **Port Mapping**.
+Die Option `-p` steht für **Port Mapping**. Dadurch wird der Port nach aussen freigegeben. 
 
 ```bash
 -p 8080:8080
@@ -233,74 +233,6 @@ Das bedeutet:
 
 * Der Webserver läuft **im Container auf Port 8080**
 * Docker leitet **Port 8080 des Hosts** an diesen Container-Port weiter
-
----
-
-## Warum ist das notwendig?
-
-Container haben ein **eigenes Netzwerk**.
-
-Der Python-Webserver läuft im Container auf:
-
-```
-0.0.0.0:8080
-```
-
-Ohne Port-Mapping wäre der Server **nur innerhalb des Containers erreichbar**.
-
-Mit `-p` wird der Port nach aussen freigegeben.
-
----
-
-## Zusammenhang mit dem Python-Webserver
-
-Der Server wird im Code so gestartet:
-
-```python id="v4a9yz"
-server = HTTPServer(("0.0.0.0", get_port()), HelloHandler)
-```
-
-`0.0.0.0` bedeutet:
-
-> Der Server akzeptiert Verbindungen auf **allen Netzwerkinterfaces im Container**.
-
-Die Funktion `get_port()` liest den Port aus der Environment Variable:
-
-```python id="rfq3if"
-os.environ.get("PORT", "8080")
-```
-
-Standardmässig läuft der Webserver daher auf:
-
-```id="h4b0wr"
-Port 8080
-```
-
----
-
-## Alternative Ports
-
-Man kann auch einen anderen Host-Port verwenden.
-
-Beispiel:
-
-```bash id="l9aqz8"
-docker run -p 9090:8080 demo-layers
-```
-
-Dann gilt:
-
-| Host | Container |
-| ---- | --------- |
-| 9090 | 8080      |
-
-Die Anwendung ist dann erreichbar unter:
-
-```id="blru6p"
-http://localhost:9090
-```
-
-Der Container verwendet weiterhin **Port 8080**, aber der Host leitet **Port 9090** weiter.
 
 ---
 
