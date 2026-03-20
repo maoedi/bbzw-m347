@@ -27,3 +27,4 @@ COPY app.py .
 USER 1000
 
 CMD ["python", "app.py"]
+
